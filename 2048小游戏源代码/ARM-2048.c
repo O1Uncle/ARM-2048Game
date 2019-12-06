@@ -22,50 +22,50 @@
 /*
 	time: 2019-12-4  ---  14:53
 	2048-3
-	½ø¶È£º
-		ÒÑÍê³É£º
-			1: Âß¼­²¿·ÖÈ«²¿ÍêÉÆ£¬´úÂë²¼¾ÖÉÔÎ¢²»×ã£¬Ã»ÓĞ×öÓÎÏ·½áÊøµÄ´¦Àí
-			2£ºĞÂ³öÏÖµÄÔªËØ»áÔÚ  2/4 Ëæ»ú³öÏÖ   --- > 12-4  --- 22:37
+	è¿›åº¦ï¼š
+		å·²å®Œæˆï¼š
+			1: é€»è¾‘éƒ¨åˆ†å…¨éƒ¨å®Œå–„ï¼Œä»£ç å¸ƒå±€ç¨å¾®ä¸è¶³ï¼Œæ²¡æœ‰åšæ¸¸æˆç»“æŸçš„å¤„ç†
+			2ï¼šæ–°å‡ºç°çš„å…ƒç´ ä¼šåœ¨  2/4 éšæœºå‡ºç°   --- > 12-4  --- 22:37
 */
 int *plcd = NULL;
 int color, oldScore=0;
-int numbers[10]; 				// 0--9 µÄÊı×ÖÍ¼Æ¬
-int score=0; 					// µ±Ç°µÃ·Ö
-int imgs[16]; 					// Êı×ÖÍ¼Æ¬¡¢ÓÎÏ·½áÊøÍ¼Æ¬£¬°´Å¥Í¼Æ¬
-int map[6][6];					// ÓÎÏ·µØÍ¼
-int fd_touch; 					// ´¥ÃşÊÂ¼ş
-int fd_lcd;   					// ÆÁÄ»
-int startx=25, starty=185;  	// ÓÎÏ·½çÃæµÄ×óÉÏ½Ç£¬Õâ¸öÊı×Ö¿ÉÒÔÈÃÓÎÏ·ÏÔÊ¾ÔÚÕıÖĞ¼ä
-int pid;						// ²¥·ÅÒôÀÖÏß³Ì
-char *buf = "./res/1.mp3";		// ÒôÀÖÎÄ¼şÂ·¾¶
+int numbers[10]; 				// 0--9 çš„æ•°å­—å›¾ç‰‡
+int score=0; 					// å½“å‰å¾—åˆ†
+int imgs[16]; 					// æ•°å­—å›¾ç‰‡ã€æ¸¸æˆç»“æŸå›¾ç‰‡ï¼ŒæŒ‰é’®å›¾ç‰‡
+int map[6][6];					// æ¸¸æˆåœ°å›¾
+int fd_touch; 					// è§¦æ‘¸äº‹ä»¶
+int fd_lcd;   					// å±å¹•
+int startx=25, starty=185;  	// æ¸¸æˆç•Œé¢çš„å·¦ä¸Šè§’ï¼Œè¿™ä¸ªæ•°å­—å¯ä»¥è®©æ¸¸æˆæ˜¾ç¤ºåœ¨æ­£ä¸­é—´
+int pid;						// æ’­æ”¾éŸ³ä¹çº¿ç¨‹
+char *buf = "./res/1.mp3";		// éŸ³ä¹æ–‡ä»¶è·¯å¾„
 
 struct Local {
 	int i, j;
 };
-struct  Local local[16];			// Í¨¹ıÑ­»·Êı×é£¬Ê¹Ã¿´ÎĞÂ³öÏÖµÄÎ»ÖÃ²»Í¬
-struct  Local locational[6][6];     // Ã¿ÕÅÍ¼Æ¬Ó¦¸Ã³öÏÖµÄÎ»ÖÃ , locational[][].j  ÖĞ j ´ú±í x ÖáµÄÖµ
-int  	defMove[6]; 				// ÅĞ¶ÏÒ»ÁĞÊı¾İÊÇ·ñÒÆ¶¯
-int  	step;       				// ¿ØÖÆĞÂ³öÏÖµÄÎ»ÖÃ²»ÒªÖØ¸´
-void 	initImge();  										// ³õÊ¼»¯ÓÎÏ·×ÊÔ´
-void 	showImage(int fd_bmp, int x1, int y1);				// ÏÔÊ¾Í¼Æ¬
+struct  Local local[16];			// é€šè¿‡å¾ªç¯æ•°ç»„ï¼Œä½¿æ¯æ¬¡æ–°å‡ºç°çš„ä½ç½®ä¸åŒ
+struct  Local locational[6][6];     // æ¯å¼ å›¾ç‰‡åº”è¯¥å‡ºç°çš„ä½ç½® , locational[][].j  ä¸­ j ä»£è¡¨ x è½´çš„å€¼
+int  	defMove[6]; 				// åˆ¤æ–­ä¸€åˆ—æ•°æ®æ˜¯å¦ç§»åŠ¨
+int  	step;       				// æ§åˆ¶æ–°å‡ºç°çš„ä½ç½®ä¸è¦é‡å¤
+void 	initImge();  										// åˆå§‹åŒ–æ¸¸æˆèµ„æº
+void 	showImage(int fd_bmp, int x1, int y1);				// æ˜¾ç¤ºå›¾ç‰‡
 void 	showImage3(int fd, int x0, int y0);
-void 	downImage();										// ¹Ø±ÕÍ¼Æ¬ÎÄ¼ş
-void 	draw(int starty, int startx);  						// »æÖÆÓÎÏ·³õÊ¼½çÃæ
-void 	GameControl(int dir);          						// ºÏ²¢¿ØÖÆ
-void 	GameInit();											// ÓÎÏ·³õÊ¼»¯
-void 	GameEnd();  										// ÓÎÏ·½áÊø£¬×ÊÔ´¹Ø±Õ
-void  	GameRun(int dirX0, int dirY0, int dirX1, int dirY1);// ÓÎÏ·ÔËĞĞ£¬µÈ´ı»¬¶¯
-void    WaitTouch();										// ÓÎÏ·ÔËĞĞ£¬µÈ´ı»¬¶¯
-void    reDrawMap();										// ÓÎÏ·ÖØĞÂ¿ªÊ¼£¬ÖØ»æÓÎÏ·½çÃæ
+void 	downImage();										// å…³é—­å›¾ç‰‡æ–‡ä»¶
+void 	draw(int starty, int startx);  						// ç»˜åˆ¶æ¸¸æˆåˆå§‹ç•Œé¢
+void 	GameControl(int dir);          						// åˆå¹¶æ§åˆ¶
+void 	GameInit();											// æ¸¸æˆåˆå§‹åŒ–
+void 	GameEnd();  										// æ¸¸æˆç»“æŸï¼Œèµ„æºå…³é—­
+void  	GameRun(int dirX0, int dirY0, int dirX1, int dirY1);// æ¸¸æˆè¿è¡Œï¼Œç­‰å¾…æ»‘åŠ¨
+void    WaitTouch();										// æ¸¸æˆè¿è¡Œï¼Œç­‰å¾…æ»‘åŠ¨
+void    reDrawMap();										// æ¸¸æˆé‡æ–°å¼€å§‹ï¼Œé‡ç»˜æ¸¸æˆç•Œé¢
 void 	LCD_Draw_Point(int x, int y, int color);
-void 	new3();												// ´´½¨ĞÂµÄ·½¿é£¬Ãû×ÖËæ±ãÈ¡µÃ
-int  	findBmpId(int x);               					// ¸ù¾İmap[][] µÄÖµÅĞ¶ÏÒªÏÔÊ¾ÄÄÖÖÍ¼Æ¬£¨¶ÔÊıº¯Êı£©
-void    setScore();                                			// ´«ÈëÒ»¸öÊı×Ö£¬ÔÚÌØ¶¨µÄÎ»ÖÃÏÔÊ¾³öÀ´
+void 	new3();												// åˆ›å»ºæ–°çš„æ–¹å—ï¼Œåå­—éšä¾¿å–å¾—
+int  	findBmpId(int x);               					// æ ¹æ®map[][] çš„å€¼åˆ¤æ–­è¦æ˜¾ç¤ºå“ªç§å›¾ç‰‡ï¼ˆå¯¹æ•°å‡½æ•°ï¼‰
+void    setScore();                                			// ä¼ å…¥ä¸€ä¸ªæ•°å­—ï¼Œåœ¨ç‰¹å®šçš„ä½ç½®æ˜¾ç¤ºå‡ºæ¥
 void 	lcd_draw_word(int x0,int y0,int w,int h,char *data,int color);
 void showWord();
 
 /**
- * ÒÔÏÂdataxÏµÁĞÊı×é´æ´¢µÄÊÇºº×Ö×ÖÄ£Âë
+ * ä»¥ä¸‹dataxç³»åˆ—æ•°ç»„å­˜å‚¨çš„æ˜¯æ±‰å­—å­—æ¨¡ç 
  * 
  **/
 char 	data1[33*32/8]= {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x80,0x00,0x38,0x01,0xE0,0x00,0x3C,
@@ -162,51 +162,51 @@ char	data9[33*4]= {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0
 
 //////////////////            main             /////////////////
 int main() {
-	//´ò¿ªÆÁÄ»ÎÄ¼ş
-	GameInit();			// ×ÊÔ´³õÊ¼»¯
-	WaitTouch();    	// µÈ´ı´¥Ãş
-	GameEnd(); 			// ×ÊÔ´ÊÍ·Å
+	//æ‰“å¼€å±å¹•æ–‡ä»¶
+	GameInit();			// èµ„æºåˆå§‹åŒ–
+	WaitTouch();    	// ç­‰å¾…è§¦æ‘¸
+	GameEnd(); 			// èµ„æºé‡Šæ”¾
 	return 0;
 }
 ////////////////////////////////////////////////////////////////
 void GameInit() {
-	//´´½¨²¥·ÅÒôÀÖµÄÏß³Ì
+	//åˆ›å»ºæ’­æ”¾éŸ³ä¹çš„çº¿ç¨‹
 	pid = fork();
-	//Ïß³Ì´´½¨³É¹¦
+	//çº¿ç¨‹åˆ›å»ºæˆåŠŸ
 	if(pid==0) {
-		execlp("madplay", "madplay", buf, "-r", NULL);		//µ÷ÓÃmadplay²¥·ÅÒôÀÖ
+		execlp("madplay", "madplay", buf, "-r", NULL);		//è°ƒç”¨madplayæ’­æ”¾éŸ³ä¹
 	}
-	//´ò¿ªÆÁÄ»ÎÄ¼ş
+	//æ‰“å¼€å±å¹•æ–‡ä»¶
 	fd_lcd = open("/dev/fb0",O_RDWR);
 	if(fd_lcd < 0) {
 		perror("open lcd error");
 		return ;
 	}
 	int i, j;
-	initImge(); 											// ¼ÓÔØÍ¼Æ¬
-	//ĞÎ³ÉÓ³Éä¹ØÏµ,plcdÖ¸ÏòÓ³ÉäÇøÓòÖĞµÄÊ×µØÖ·(Ò²¾ÍÊÇµÚÒ»¸öintµÄÎ»ÖÃ)
+	initImge(); 											// åŠ è½½å›¾ç‰‡
+	//å½¢æˆæ˜ å°„å…³ç³»,plcdæŒ‡å‘æ˜ å°„åŒºåŸŸä¸­çš„é¦–åœ°å€(ä¹Ÿå°±æ˜¯ç¬¬ä¸€ä¸ªintçš„ä½ç½®)
 	plcd = mmap(NULL,480*800*4,PROT_READ | PROT_WRITE,MAP_SHARED,fd_lcd,0);
 	if(plcd == NULL) {
 		perror("mmap failed");
 		return;
 	}
-	for (i = 0; i < 480; ++i) { // ³õÊ¼»¯±³¾°
+	for (i = 0; i < 480; ++i) { // åˆå§‹åŒ–èƒŒæ™¯
 		for(j = 0; j < 800; ++j) {
 			*(plcd + 800 * i + j) = 0x050505;
 		}
 	}
-	draw(starty, startx); 			// ÏÔÊ¾³õÊ¼µÄÓÎÏ·½çÃæ£¬ ¸ù¾İ  map[][]   ÏÔÊ¾ 16 ¸ö·ÖÀëµÄ¸ñ×Ó
+	draw(starty, startx); 			// æ˜¾ç¤ºåˆå§‹çš„æ¸¸æˆç•Œé¢ï¼Œ æ ¹æ®  map[][]   æ˜¾ç¤º 16 ä¸ªåˆ†ç¦»çš„æ ¼å­
 	showImage3(imgs[13], 657, 25);
-	showImage3(imgs[12], 657, 405); // ÖØĞÂ¿ªÊ¼°´Å¥»æÖÆ
-	setScore();    					// ³õÊ¼·ÖÊı
+	showImage3(imgs[12], 657, 405); // é‡æ–°å¼€å§‹æŒ‰é’®ç»˜åˆ¶
+	setScore();    					// åˆå§‹åˆ†æ•°
 	showWord();
 }
-// ÓÎÏ·ÔËĞĞ£¬µÈ´ı»¬¶¯
+// æ¸¸æˆè¿è¡Œï¼Œç­‰å¾…æ»‘åŠ¨
 void WaitTouch() {
 	fd_touch = open("/dev/input/event0", O_RDWR);
 	//printf("test\n");
 	if(fd_touch < 0) {
-		perror("´ò¿ªÊ§°Ü");
+		perror("æ‰“å¼€å¤±è´¥");
 		return;
 	}
 	struct input_event ev;
@@ -216,7 +216,7 @@ void WaitTouch() {
 //	printf("test2\n");
 	while(1) {
 		ret = read(fd_touch, &ev, sizeof(ev));
-		//printf("Î´´¥Ãş");
+		//printf("æœªè§¦æ‘¸");
 		if(ret != sizeof(ev)) {
 			continue;
 		}
@@ -226,38 +226,38 @@ void WaitTouch() {
 		} else if(ev.type == EV_ABS && ev.code == ABS_Y) {
 			y1 = ev.value;
 //			printf("y1 = %d\n", y1);
-		} else if(ev.type == EV_KEY && ev.code == BTN_TOUCH && ev.value == 0) {  // ´¥ÃşÖÕµã
+		} else if(ev.type == EV_KEY && ev.code == BTN_TOUCH && ev.value == 0) {  // è§¦æ‘¸ç»ˆç‚¹
 //			printf("leave\n");
 			dirX1 = x1;
 			dirY1 = y1;
-		} else if(ev.type == EV_KEY && ev.code == BTN_TOUCH && ev.value == 1) {  // ´¥ÃşÆğµã
-			// ¸Õ°´ÏÂ
+		} else if(ev.type == EV_KEY && ev.code == BTN_TOUCH && ev.value == 1) {  // è§¦æ‘¸èµ·ç‚¹
+			// åˆšæŒ‰ä¸‹
 			dirX0 = x1;
 			dirY0 = y1;
-			//  restart °´¼ü´¥·¢¿ØÖÆ
+			//  restart æŒ‰é”®è§¦å‘æ§åˆ¶
 			if(dirX0 > 657 && dirX0 < 757 && dirY0 > 405 && dirY0 < 455) {
-				reDrawMap();  // ÓÎÏ·½çÃæÖØ»æ
+				reDrawMap();  // æ¸¸æˆç•Œé¢é‡ç»˜
 				continue;
 			}
 			dirX1 = dirY1 = -1;
-		} else if(dirX0 != -1 && dirY0 != -1 && dirX1 != -1 && dirY1 != -1) {   // »¬¶¯·½Ïò
-			GameRun(dirX0, dirY0, dirX1, dirY1);  								// »¬¶¯Ö®ºóµÄ½çÃæ×´Ì¬¿ØÖÆ
+		} else if(dirX0 != -1 && dirY0 != -1 && dirX1 != -1 && dirY1 != -1) {   // æ»‘åŠ¨æ–¹å‘
+			GameRun(dirX0, dirY0, dirX1, dirY1);  								// æ»‘åŠ¨ä¹‹åçš„ç•Œé¢çŠ¶æ€æ§åˆ¶
 		}
 	}
 }
-void GameRun(int dirX0, int dirY0, int dirX1, int dirY1) {  					// Í¼Æ¬»¬¶¯
+void GameRun(int dirX0, int dirY0, int dirX1, int dirY1) {  					// å›¾ç‰‡æ»‘åŠ¨
 	int lx = abs(dirX0 - dirX1);
 	int ly = abs(dirY0 - dirY1);
 	if(lx < 50 && ly < 50) {
 		return;
 	}
 	int i;
-	if(lx >= ly) { 																// Ë®Æ½·½Ïò±ä»¯´ó
-		if(dirX1 - dirX0 > 0) {     											// ÏòÓÒÒÆ¶¯
+	if(lx >= ly) { 																// æ°´å¹³æ–¹å‘å˜åŒ–å¤§
+		if(dirX1 - dirX0 > 0) {     											// å‘å³ç§»åŠ¨
 //					printf("right\n");
 			GameControl(0);
 		} else {
-//					printf("left\n");  											// Ïò×óÒÆ¶¯
+//					printf("left\n");  											// å‘å·¦ç§»åŠ¨
 			GameControl(1);
 		}
 	} else {
@@ -273,7 +273,7 @@ void GameRun(int dirX0, int dirY0, int dirX1, int dirY1) {  					// Í¼Æ¬»¬¶¯
 		if(defMove[i] != -1) {
 			new3();
 			GameOver();
-//			printf("%d \n", score);												// ³öÏÖĞÂµÄ·½¿é, ²¢ÇÒ»á»­³öÀ´
+//			printf("%d \n", score);												// å‡ºç°æ–°çš„æ–¹å—, å¹¶ä¸”ä¼šç”»å‡ºæ¥
 			if(score > oldScore) {
 				setScore();
 				oldScore = score;
@@ -283,9 +283,9 @@ void GameRun(int dirX0, int dirY0, int dirX1, int dirY1) {  					// Í¼Æ¬»¬¶¯
 	}
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//// »æÖÆ²¿·Ö
-void draw(int starty, int startx) {  											// ÔÚÆÁÄ»ÉÏÏÔÊ¾µ±Ç°µÄµØÍ¼
-	// Õû¸öµØÍ¼¶¼ÖØ»­
+//// ç»˜åˆ¶éƒ¨åˆ†
+void draw(int starty, int startx) {  											// åœ¨å±å¹•ä¸Šæ˜¾ç¤ºå½“å‰çš„åœ°å›¾
+	// æ•´ä¸ªåœ°å›¾éƒ½é‡ç”»
 	int i, j;
 	int id;
 	for(i=1; i <= 4; ++i) {
@@ -295,25 +295,25 @@ void draw(int starty, int startx) {  											// ÔÚÆÁÄ»ÉÏÏÔÊ¾µ±Ç°µÄµØÍ¼
 		}
 	}
 }
-// °´ÏÂÖØĞÂ¿ªÊ¼£¬Ö®ºóÖØ»æµØÍ¼
+// æŒ‰ä¸‹é‡æ–°å¼€å§‹ï¼Œä¹‹åé‡ç»˜åœ°å›¾
 void reDrawMap() {
-	//´´½¨²¥·ÅÒôÀÖµÄÏß³Ì
+	//åˆ›å»ºæ’­æ”¾éŸ³ä¹çš„çº¿ç¨‹
 	kill(pid, 9);
 	pid = fork();
-	//Ïß³Ì´´½¨³É¹¦
+	//çº¿ç¨‹åˆ›å»ºæˆåŠŸ
 	if(pid==0) {
-		execlp("madplay", "madplay", buf, "-r", NULL);							//µ÷ÓÃmadplay²¥·ÅÒôÀÖ
+		execlp("madplay", "madplay", buf, "-r", NULL);							//è°ƒç”¨madplayæ’­æ”¾éŸ³ä¹
 	}
 	score = 0;
 	oldScore = 0;
 	int i, j, xl, yl;
-	for(i = 1; i <= 4; ++i) { // µØÍ¼ÖØ»æ
+	for(i = 1; i <= 4; ++i) { // åœ°å›¾é‡ç»˜
 		for(j = 1; j <= 4; ++j) {
 			map[i][j] = 0;
 		}
 	}
 	i = 0;
-	while(i < 3) {  // ÔÚËæ»úµÄÎ»ÖÃ²úÉú 3 ¸ö 2
+	while(i < 3) {  // åœ¨éšæœºçš„ä½ç½®äº§ç”Ÿ 3 ä¸ª 2
 		srandom(time(NULL)); // set seed
 		xl = random()%4+1;
 		srandom(time(NULL)+444);
@@ -323,17 +323,17 @@ void reDrawMap() {
 			i++;
 		}
 	}
-	for (i = 0; i < 480; ++i) { // ³õÊ¼»¯±³¾°
+	for (i = 0; i < 480; ++i) { // åˆå§‹åŒ–èƒŒæ™¯
 		for(j = 0; j < 800; ++j) {
 			*(plcd + 800 * i + j) = 0x050505;
 		}
 	}
 
 	showImage3(imgs[13], 657, 25);
-	showImage3(imgs[12], 657, 405); // ÖØĞÂ¿ªÊ¼°´Å¥»æÖÆ
+	showImage3(imgs[12], 657, 405); // é‡æ–°å¼€å§‹æŒ‰é’®ç»˜åˆ¶
 
-	setScore();    			// ³õÊ¼·ÖÊı
-	draw(starty, startx);  // ·½¸ñÖØ»æ
+	setScore();    			// åˆå§‹åˆ†æ•°
+	draw(starty, startx);  // æ–¹æ ¼é‡ç»˜
 	showWord();
 }
 void showWord() {
@@ -352,7 +352,7 @@ void showWord() {
 }
 
 
-void setScore() { // »æÖÆ·ÖÊı
+void setScore() { // ç»˜åˆ¶åˆ†æ•°
 	int x, y;
 	x = 657 + 60;
 	y = 205;
@@ -370,7 +370,7 @@ void setScore() { // »æÖÆ·ÖÊı
 	}
 }
 ///////////////////////////////////////////////////
-void initImge() {  // ½«×ÊÔ´µ÷ÈëÄÚ´æ
+void initImge() {  // å°†èµ„æºè°ƒå…¥å†…å­˜
 	int i = 0, j;
 	int xl, yl;
 	imgs[0]    = open("./res/0.bmp", O_RDWR);
@@ -385,7 +385,7 @@ void initImge() {  // ½«×ÊÔ´µ÷ÈëÄÚ´æ
 	imgs[9]    = open("./res/512.bmp", O_RDWR);
 	imgs[10]   = open("./res/1024.bmp", O_RDWR);
 	imgs[11]   = open("./res/2048.bmp", O_RDWR);
-	numbers[0] = open("./res/n0.bmp", O_RDWR);  // Êı×ÖÍ¼Æ¬
+	numbers[0] = open("./res/n0.bmp", O_RDWR);  // æ•°å­—å›¾ç‰‡
 	numbers[1] = open("./res/n1.bmp", O_RDWR);
 	numbers[2] = open("./res/n2.bmp", O_RDWR);
 	numbers[3] = open("./res/n3.bmp", O_RDWR);
@@ -395,10 +395,10 @@ void initImge() {  // ½«×ÊÔ´µ÷ÈëÄÚ´æ
 	numbers[7] = open("./res/n7.bmp", O_RDWR);
 	numbers[8] = open("./res/n8.bmp", O_RDWR);
 	numbers[9] = open("./res/n9.bmp", O_RDWR);
-	imgs[12]   = open("./res/restart.bmp", O_RDWR);  // ÖØĞÂ¿ªÊ¼°´Å¥
-	imgs[13]   = open("./res/score.bmp", O_RDWR);  // ÖØĞÂ¿ªÊ¼°´Å¥
+	imgs[12]   = open("./res/restart.bmp", O_RDWR);  // é‡æ–°å¼€å§‹æŒ‰é’®
+	imgs[13]   = open("./res/score.bmp", O_RDWR);  // é‡æ–°å¼€å§‹æŒ‰é’®
 	imgs[14]   = open("./res/gameOver.bmp", O_RDWR);
-	while(i < 3) {  // ÔÚËæ»úµÄÎ»ÖÃ²úÉú 3 ¸ö 2
+	while(i < 3) {  // åœ¨éšæœºçš„ä½ç½®äº§ç”Ÿ 3 ä¸ª 2
 		srandom(time(NULL)); // set seed
 		xl = random()%4+1;
 		srandom(time(NULL)+444);
@@ -420,15 +420,15 @@ void initImge() {  // ½«×ÊÔ´µ÷ÈëÄÚ´æ
 		for(j = 1; j <= 4; ++j) {
 			local[4*(i-1)+(j-1)].i = i;
 			local[4*(i-1)+(j-1)].j = j;
-			locational[i][j].j = starty+(j-1)*100 + jianxi1; // x Öá
-			locational[i][j].i = jianxi2 + startx+(i-1)*100; // y Öá, Ã¿ÕÅĞ¡Í¼Æ¬µÄÎ»ÖÃ¶¼±»È·¶¨ÁË
+			locational[i][j].j = starty+(j-1)*100 + jianxi1; // x è½´
+			locational[i][j].i = jianxi2 + startx+(i-1)*100; // y è½´, æ¯å¼ å°å›¾ç‰‡çš„ä½ç½®éƒ½è¢«ç¡®å®šäº†
 			jianxi1 += 10;
 		}
 		jianxi1 = 0;
 		jianxi2 += 10;
 	}
 }
-void downImage() {   // ¹Ø±ÕÍ¼Æ¬ÎÄ¼ş
+void downImage() {   // å…³é—­å›¾ç‰‡æ–‡ä»¶
 	int i;
 	for(i=0; i<11; ++i) {
 		close(imgs[i]);
@@ -436,14 +436,14 @@ void downImage() {   // ¹Ø±ÕÍ¼Æ¬ÎÄ¼ş
 	}
 
 }
-int findBmpId(int x) {  // ¸ù¾İ map[i][j] µÄÖµÅĞ¶ÏÊ¹ÓÃÄÄÕÅÍ¼Æ¬
+int findBmpId(int x) {  // æ ¹æ® map[i][j] çš„å€¼åˆ¤æ–­ä½¿ç”¨å“ªå¼ å›¾ç‰‡
 	if(x == 0) {
 		return 0;
 	}
 	return log(x)/log(2);
 }
-void showImage(int fd_bmp, int x1, int y1) { // ½« 100 * 100 Í¼Æ¬ÏÔÊ¾µ½ÆÁÄ»ÉÏÌØ¶¨µÄÎ»ÖÃ
-	int start=0x36; // Æ«ÒÆ 36¸ö×Ö½Ú¿ªÊ¼¶ÁÈ¡Í¼Æ¬µÄÄÚÈİ
+void showImage(int fd_bmp, int x1, int y1) { // å°† 100 * 100 å›¾ç‰‡æ˜¾ç¤ºåˆ°å±å¹•ä¸Šç‰¹å®šçš„ä½ç½®
+	int start=0x36; // åç§» 36ä¸ªå­—èŠ‚å¼€å§‹è¯»å–å›¾ç‰‡çš„å†…å®¹
 	int color;
 	int ret, i, j;
 	char buf[4];
@@ -466,12 +466,12 @@ void showImage(int fd_bmp, int x1, int y1) { // ½« 100 * 100 Í¼Æ¬ÏÔÊ¾µ½ÆÁÄ»ÉÏÌØ¶
 	}
 }
 /////////////////////////////////////////////
-void new3() { // ÔÚ¿Õ°×µÄÎ»ÖÃ³öÏÖĞÂµÄÔªËØ
+void new3() { // åœ¨ç©ºç™½çš„ä½ç½®å‡ºç°æ–°çš„å…ƒç´ 
 	int i, j;
 	int k=0;
 	int tmp;
 	while(1) {
-		step = (step+1)%16; 	// ±£Áô×ÅÉÏ´Î³öÏÖµÄÎ»ÖÃ
+		step = (step+1)%16; 	// ä¿ç•™ç€ä¸Šæ¬¡å‡ºç°çš„ä½ç½®
 		i = local[step].i;
 		j = local[step].j;
 		if(map[i][j] == 0) {
@@ -486,23 +486,23 @@ void new3() { // ÔÚ¿Õ°×µÄÎ»ÖÃ³öÏÖĞÂµÄÔªËØ
 			showImage(imgs[tmp+1], locational[i][j].j, locational[i][j].i);
 			break;
 		}
-		if(k > 18) { // ±ÜÃâÒòÃ»ÕÒµ½¶øËÀÑ­»·
+		if(k > 18) { // é¿å…å› æ²¡æ‰¾åˆ°è€Œæ­»å¾ªç¯
 			break;
 		}
 		k++;
 	}
 }
-void GameControl(int dir) {  // ¿ØÖÆÆ÷
+void GameControl(int dir) {  // æ§åˆ¶å™¨
 	int i, j, tmp, k, id;
-	for(i=1; i <= 4; ++i) {  // ±ê¼ÇËùÓĞµÄĞĞ¶¼Ã»ÓĞ±»¶¯¹ı
+	for(i=1; i <= 4; ++i) {  // æ ‡è®°æ‰€æœ‰çš„è¡Œéƒ½æ²¡æœ‰è¢«åŠ¨è¿‡
 		defMove[i] = -1;
 	}
 	switch(dir) {
-		case 0: // ÏòÓÒ
+		case 0: // å‘å³
 			for(i = 1; i <= 4; ++i) {
 				for(j = 3; j >= 1; --j) {
-					// ÔÚ»¬¶¯µÄÊ±ºò¾ÍÖ±½Ó»­³öÀ´
-					if(map[i][j] != 0) { 	// ·Ç 0 ÔªËØ²ÅĞèÒªÅĞ¶Ï
+					// åœ¨æ»‘åŠ¨çš„æ—¶å€™å°±ç›´æ¥ç”»å‡ºæ¥
+					if(map[i][j] != 0) { 	// é 0 å…ƒç´ æ‰éœ€è¦åˆ¤æ–­
 						k = j+1;
 						while(map[i][k] == 0) {
 							k++;
@@ -511,34 +511,34 @@ void GameControl(int dir) {  // ¿ØÖÆÆ÷
 							map[i][k] *= 2;
 							map[i][j] = 0;
 							++score;
-							// ÔÚÕâÀïÖ±½Ó»­³öÀ´
+							// åœ¨è¿™é‡Œç›´æ¥ç”»å‡ºæ¥
 							id = findBmpId(map[i][j]);
 							showImage3(imgs[id], locational[i][j].j, locational[i][j].i);
 							id = findBmpId(map[i][k]);
 							showImage3(imgs[id], locational[i][k].j, locational[i][k].i);
-							defMove[i] = 1; // ±ê¼ÇÒ»ÏÂ£¬ÕâÒ»ĞĞ¸Ä±ä¹ı
+							defMove[i] = 1; // æ ‡è®°ä¸€ä¸‹ï¼Œè¿™ä¸€è¡Œæ”¹å˜è¿‡
 						} else { 			//if(map[i][k] == -1)
-							if(k-j == 1) {  // ÎŞĞ§»¬¶¯
+							if(k-j == 1) {  // æ— æ•ˆæ»‘åŠ¨
 								continue;
 							}
-							// map[i][k] Ö»ÄÜÎª -1 »òÕßÓĞĞ§Öµ
+							// map[i][k] åªèƒ½ä¸º -1 æˆ–è€…æœ‰æ•ˆå€¼
 							tmp = map[i][j];
 							map[i][j] = 0;
 							map[i][k-1] = tmp;
-							// ÔÚÕâÀïÖ±½Ó»­³öÀ´
+							// åœ¨è¿™é‡Œç›´æ¥ç”»å‡ºæ¥
 							id = findBmpId(map[i][j]);
 							showImage3(imgs[id], locational[i][j].j, locational[i][j].i);
 
 							id = findBmpId(map[i][k-1]);
 							showImage3(imgs[id], locational[i][k-1].j, locational[i][k-1].i);
 
-							defMove[i] = 1; // ±ê¼ÇÒ»ÏÂ£¬ÕâÒ»ĞĞ¸Ä±ä¹ı
+							defMove[i] = 1; // æ ‡è®°ä¸€ä¸‹ï¼Œè¿™ä¸€è¡Œæ”¹å˜è¿‡
 						}
 					}
 				}
 			}
 			break;
-		case 1: // Ïò×ó
+		case 1: // å‘å·¦
 			for(i = 1; i <= 4; ++i) {
 				for(j = 2; j <= 4; ++j) {
 					if(map[i][j] != 0) {
@@ -554,7 +554,7 @@ void GameControl(int dir) {  // ¿ØÖÆÆ÷
 							showImage3(imgs[id], locational[i][j].j, locational[i][j].i);
 							id = findBmpId(map[i][k]);
 							showImage3(imgs[id], locational[i][k].j, locational[i][k].i);
-							defMove[i] = 1; // ±ê¼ÇÒ»ÏÂ£¬ÕâÒ»ĞĞ¸Ä±ä¹ı
+							defMove[i] = 1; // æ ‡è®°ä¸€ä¸‹ï¼Œè¿™ä¸€è¡Œæ”¹å˜è¿‡
 						} else  {
 							if(k == j-1) {
 								continue;
@@ -568,14 +568,14 @@ void GameControl(int dir) {  // ¿ØÖÆÆ÷
 							showImage3(imgs[id], locational[i][j].j, locational[i][j].i);
 							id = findBmpId(map[i][k+1]);
 							showImage3(imgs[id], locational[i][k+1].j, locational[i][k+1].i);
-							defMove[i] = 1; // ±ê¼ÇÒ»ÏÂ£¬ÕâÒ»ĞĞ¸Ä±ä¹ı
+							defMove[i] = 1; // æ ‡è®°ä¸€ä¸‹ï¼Œè¿™ä¸€è¡Œæ”¹å˜è¿‡
 						}
 					}
 				}
 			}
 			break;
-		case 2: 					  		// ÏòÉÏ
-			for(i = 1; i <= 4; ++i) { 		// i ±íÊ¾µÄÊÇ  ÁĞ
+		case 2: 					  		// å‘ä¸Š
+			for(i = 1; i <= 4; ++i) { 		// i è¡¨ç¤ºçš„æ˜¯  åˆ—
 				for(j = 2; j <= 4; ++j) {
 					if(map[j][i] != 0) {
 						k = j-1;
@@ -591,10 +591,10 @@ void GameControl(int dir) {  // ¿ØÖÆÆ÷
 
 							id = findBmpId(map[k][i]);
 							showImage3(imgs[id], locational[k][i].j, locational[k][i].i);
-							defMove[i] = 1; // ±ê¼ÇÒ»ÏÂ£¬ÕâÒ»ĞĞ¸Ä±ä¹ı
+							defMove[i] = 1; // æ ‡è®°ä¸€ä¸‹ï¼Œè¿™ä¸€è¡Œæ”¹å˜è¿‡
 
 						} else  {
-							if(k==j-1) { 	// Ã»ÓĞ²Ù×÷¾ÍÍË³ö
+							if(k==j-1) { 	// æ²¡æœ‰æ“ä½œå°±é€€å‡º
 								continue;
 							}
 							tmp = map[j][i];
@@ -604,13 +604,13 @@ void GameControl(int dir) {  // ¿ØÖÆÆ÷
 							showImage3(imgs[id], locational[j][i].j, locational[j][i].i);
 							id = findBmpId(map[k+1][i]);
 							showImage3(imgs[id], locational[k+1][i].j, locational[k+1][i].i);
-							defMove[i] = 1; // ±ê¼ÇÒ»ÏÂ£¬ÕâÒ»ĞĞ¸Ä±ä¹ı
+							defMove[i] = 1; // æ ‡è®°ä¸€ä¸‹ï¼Œè¿™ä¸€è¡Œæ”¹å˜è¿‡
 						}
 					}
 				}
 			}
 			break;
-		case 3: // ÏòÏÂ
+		case 3: // å‘ä¸‹
 			for(i = 1; i <= 4; ++i) {
 				for(j = 3; j >= 1; --j) {
 					if(map[j][i] != 0) {
@@ -627,7 +627,7 @@ void GameControl(int dir) {  // ¿ØÖÆÆ÷
 
 							id = findBmpId(map[k][i]);
 							showImage3(imgs[id], locational[k][i].j, locational[k][i].i);
-							defMove[i] = 1; // ±ê¼ÇÒ»ÏÂ£¬ÕâÒ»ĞĞ¸Ä±ä¹ı
+							defMove[i] = 1; // æ ‡è®°ä¸€ä¸‹ï¼Œè¿™ä¸€è¡Œæ”¹å˜è¿‡
 						} else {
 							if(k==j+1) {
 								continue;
@@ -641,7 +641,7 @@ void GameControl(int dir) {  // ¿ØÖÆÆ÷
 
 							id = findBmpId(map[k-1][i]);
 							showImage3(imgs[id], locational[k-1][i].j, locational[k-1][i].i);
-							defMove[i] = 1; // ±ê¼ÇÒ»ÏÂ£¬ÕâÒ»ĞĞ¸Ä±ä¹ı
+							defMove[i] = 1; // æ ‡è®°ä¸€ä¸‹ï¼Œè¿™ä¸€è¡Œæ”¹å˜è¿‡
 						}
 					}
 				}
@@ -711,10 +711,10 @@ void LCD_Draw_Point(int x, int y, int color) {
 		*(plcd + 800*y + x) = color;
 	}
 }
-void GameEnd() { 				// ×ÊÔ´ÊÍ·Å
-	close(fd_touch);  			// ¹Ø±ÕÆÁÄ»ÎÄ¼ş
-	munmap(plcd, 800*480*4);  	// ÊÍ·ÅÓ³Éä
-	downImage();         		// ¹Ø±ÕÍ¼Æ¬ÎÄ¼ş
+void GameEnd() { 				// èµ„æºé‡Šæ”¾
+	close(fd_touch);  			// å…³é—­å±å¹•æ–‡ä»¶
+	munmap(plcd, 800*480*4);  	// é‡Šæ”¾æ˜ å°„
+	downImage();         		// å…³é—­å›¾ç‰‡æ–‡ä»¶
 }
 int GameOver() {
 	int i, j;
@@ -739,10 +739,10 @@ int GameOver() {
 	}
 	if(cnt == 16) {
 		showImage3(imgs[14], 200, 90);
-		kill(pid,9);						//É±ËÀ²¥·ÅÒôÀÖµÄ½ø³Ì£¬Í£Ö¹²¥·ÅÒôÀÖ
-		return -1;  						// ÓÎÏ·½áÊø
+		kill(pid,9);						//æ€æ­»æ’­æ”¾éŸ³ä¹çš„è¿›ç¨‹ï¼Œåœæ­¢æ’­æ”¾éŸ³ä¹
+		return -1;  						// æ¸¸æˆç»“æŸ
 	} else {
-		return 1;  							// ÓÎÏ·¼ÌĞø
+		return 1;  							// æ¸¸æˆç»§ç»­
 	}
 
 }
